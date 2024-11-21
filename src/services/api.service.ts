@@ -1,5 +1,7 @@
 import axios from 'axios';
+
 import { Movie } from '../hooks/useMovies';
+import { apiKey } from '../constants/apiKey';
 
 interface GetMoviesResponse {
   page: number
@@ -8,11 +10,22 @@ interface GetMoviesResponse {
   total_results: number
 }
 
+interface GetMoviesRequest {
+  language: string; 
+  page: number
+  genre: string
+}
+
 class ApiService {
-  getMovies({ language, apiKey, page }: { language: string; apiKey: string, page: number }) {
-    const category = 'popular'; // possible values: top_rated | upcoming | now_playing;
-    const url = `https://api.themoviedb.org/3/movie/${category}?language=${language}&api_key=${apiKey}&page=${page}`;
-    return axios.get<GetMoviesResponse>(url);
+  getMovies({ language, genre, page }: GetMoviesRequest) {
+    const url = `https://api.themoviedb.org/3/movie/${genre}`;
+    return axios.get<GetMoviesResponse>(url, {
+      params: {
+        language,
+        page,
+        api_key: apiKey,
+      }
+    });
   }
 }
 
